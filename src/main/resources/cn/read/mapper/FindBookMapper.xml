@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    <mapper namespace="cn.read.mapper.FindBookMapper">
+    	<!-- <resultMap type="cn.read.dao.Book" id="Book">
+    		<id column="id" property="id"/>
+    		<result column="bookurl" property="bookUrl"/>
+    		<result column="imgurl" property="imgUrl"/>
+    		<result column="rating_nums" property="ratingNums"/>
+    		<result column="comment_nums" property="CommentNums"/>
+    	</resultMap> -->
+    	
+    	<select id="findBook" resultType="cn.read.dao.Book" parameterType="java.lang.String"><!-- statementType="STATEMENT" --> 
+    		select * from ${param1} 
+    		<where>
+    			<if test="comment_nums!=null">comment_nums>=#{comment_nums}</if>
+    			<if test="rating_nums!=null">and rating_nums>=#{rating_nums}</if>
+    		</where>
+    		ORDER BY rating_nums DESC
+    	</select>
+    		
+    	<select id="findBook2" resultType="cn.read.dao.Book" parameterType="java.lang.String" >
+    		select* from book where biaoqian=#{biaoqian}
+    	</select>
+    	
+    	<select id="findBookByTitle" resultType="cn.read.dao.Book" parameterType="java.lang.String">
+    	select * from book where title like "%"#{title}"%"
+    	</select>
+    	
+    	<update id="updateBookById" parameterType="cn.read.dao.Book" >
+    	update book
+    	<set>
+    	<if test="title!=null">
+    	title=#{title},
+    	</if>
+    	<if test="ratingNums!=null">
+    	ratingNums=#{ratingNums},
+    	</if>
+    	<if test="commentNums!=null">
+    	commentNums=#{commentNums},
+    	</if>
+    	<if test="grade!=null">
+    	grade=#{grade},
+    	</if>
+    	<if test="imgurl!=null">
+    	imgurl=#{imgurl},
+    	</if>
+    	<if test="biaoqian!=null">
+    	biaoqian=#{biaoqian}
+    	</if>
+    	</set>
+    	where id=#{id}
+    	</update>
+    	
+    	<select id="findBookById" resultType="cn.read.dao.Book" parameterType="java.lang.Integer">
+    	select * from book where id=#{id}
+    	</select>
+    		
+    	<delete id="deleteByid" parameterType="java.lang.Integer">
+    	delete from book where id=#{id}
+    	</delete>
+    	<select id="findAllBook" resultType="cn.read.dao.Book">
+    	select *from book order by grade desc
+    	</select>
+    	<select id="findAllGrade" resultType="cn.read.dao.Book">
+    	select *from book order by ratingNums desc
+    	</select>
+    	<insert id="saveUseAction">
+		insert into useraction (id,username,biaoqian,time)values(id,#{username},(select biaoqian from book where title=#{title}),#{time}) 
+    	</insert> 
+    	
+    	<insert id="saveUseActionByid">
+    	insert into useraction (id,username,biaoqian,time)values(#{id},#{username},(select biaoqian from book where id=#{id}),#{time})
+    	</insert>
+    	
+    	<select id="getNumOfBq" parameterType="java.lang.String" resultType="java.lang.Integer">
+    	select count(*) from useraction where biaoqian=#{biaoqian} and username=#{username}
+    	</select>
+    	
+    	<select id="getListOfBQ" resultType="java.lang.String" parameterType="java.lang.String">
+    	SELECT DISTINCT biaoqian from useraction where username=#{username}
+    	</select>
+    	
+    	<select id="recomBoo" resultType="cn.read.dao.Book">
+    		select * from book where biaoqian=#{biaoqian}  order by grade desc limit 0,#{ts}
+    	</select>
+    	
+    </mapper>

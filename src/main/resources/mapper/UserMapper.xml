@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    <mapper namespace="cn.read.mapper.UserMapper">
+    	<resultMap type="cn.read.dao.User" id="User">
+    		<id column="id" property="id"/>
+    		<result column="user_name" property="username"/>
+    		<result column="password" property="password"/>
+    		<result column="phone_number" property="phonenumber"/>
+    		<result column="email" property="email"/>
+    	</resultMap>
+    		<!-- 用户注册  -->
+    	<insert id="addUser" >
+    		insert into userInfo (username,password,phonenumber,email) values(#{username},#{password},#{phonenumber},#{email}) 
+    	</insert>
+    	<!-- 查找用户 -->
+    	<select id="select" resultType="cn.read.dao.User" >
+			select id,username,password,phonenumber,email from user t
+			<where>
+				<if test="username != null">
+					and t.username = #{username}
+				</if>
+				<if test="password != null">
+					and t.password = #{password}
+				</if>
+			</where>
+		</select>
+	
+    		<!-- 删除用户 -->
+    	<delete id="deleteUserByid" >
+    		delete from userinfo where id=(#{id})
+    	</delete>
+    		<!-- 查找用户 -->
+    	<select id="selectById" resultType="cn.read.dao.User">
+			select id,user_name,password,phone_number,email from user where id = #{_parameter}
+		</select>
+		
+		<!-- 查找用户通过姓名 -->
+    	<select id="selectByname" resultType="cn.read.dto.UserInfo" parameterType="java.lang.String">
+			select* from userinfo where username = (#{username})
+		</select>
+			<!-- 修改用户信息 -->
+			
+		<update id="updatebyId">
+			update userinfo 
+			<set>
+			<if test="username!= null">
+				username = #{username},
+			</if>
+			<if test="email != null">
+				email=#{email},
+			</if>
+			<if test="phonenumber != null">
+				phonenumber = #{phonenumber},
+			</if>
+			
+		</set>
+			where id = #{id}
+		</update>	
+			
+		<update id="update">
+		update user
+		
+		<set>
+			<if test="name != null">
+				name = #{name},
+			</if>
+			<if test="user_Name != null">
+				user_name=#{user_name},
+			</if>
+			<if test="password != null">
+				password = #{password},
+			</if>
+			
+		</set>
+		where id=#{id}
+		<if test="name != null">
+			and not exists(select 1 from(select 1 from sys_user where user_name=#{user_name} and id != #{id})a)
+		</if>
+	</update>
+	
+	<!-- 查找所有用户信息 -->
+	<select id="findAllUser" resultType="cn.read.dao.User">
+		select * from user
+	</select>
+	
+	<select id="findByUsername" resultType="cn.read.dto.UserInfo" parameterType="java.lang.String">
+		select * from userinfo where username=#{username}
+	</select>
+	<select id="findUserInfo" resultType="cn.read.dto.UserInfo">
+	select *from  userinfo
+	</select>
+    </mapper>
+   

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    <mapper namespace="cn.read.mapper.FindBookMapper">
+    	<!-- <resultMap type="cn.read.dao.Book" id="Book">
+    		<id column="id" property="id"/>
+    		<result column="bookurl" property="bookUrl"/>
+    		<result column="imgurl" property="imgUrl"/>
+    		<result column="rating_nums" property="ratingNums"/>
+    		<result column="comment_nums" property="CommentNums"/>
+    	</resultMap> -->
+    	
+    	<select id="findBook" resultType="cn.read.dao.Book" parameterType="java.lang.String"><!-- statementType="STATEMENT" --> 
+    		select * from ${param1} 
+    		<where>
+    			<if test="comment_nums!=null">comment_nums>=#{comment_nums}</if>
+    			<if test="rating_nums!=null">and rating_nums>=#{rating_nums}</if>
+    		</where>
+    		ORDER BY rating_nums DESC
+    	</select>
+    		
+    	<select id="findBook2" resultType="cn.read.dao.Book" parameterType="java.lang.String" >
+    		select* from book where biaoqian=#{biaoqian}
+    	</select>
+    </mapper>
